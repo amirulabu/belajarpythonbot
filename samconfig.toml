@@ -19,7 +19,6 @@ confirm_changeset = true
 resolve_s3 = true
 s3_prefix = "bpbot-2023"
 region = "ap-southeast-1"
-profile = "amirulabu"
 image_repositories = []
 stack_name = "bpbot-2023"
 
