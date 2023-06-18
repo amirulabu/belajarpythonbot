@@ -1,5 +1,12 @@
 import requests
-from src.helper import get_admin_chat_id, get_url, logging, notify_admin, send_message
+from src.helper import (
+    edit_message,
+    get_admin_chat_id,
+    get_url,
+    logging,
+    notify_admin,
+    send_message,
+)
 
 import src.helper
 import builtins
@@ -76,3 +83,52 @@ def test_get_multiple_admin_chat_id(monkeypatch):
     monkeypatch.setenv("TELEGRAM_ADMIN", "12345, 54321")
     ret = get_admin_chat_id()
     assert ret == ["12345", "54321"]
+
+
+def test_edit_message(mocker, monkeypatch):
+    monkeypatch.setenv("TOKEN", "12345")
+    spy_logging = mocker.spy(src.helper, "logging")
+    spy_requests_post = mocker.spy(requests, "post")
+    edit_message(chat_id="12345", message_id="12345", text="test")
+    assert spy_logging.call_count == 2
+    assert spy_requests_post.call_count == 1
+    spy_logging.assert_any_call(
+        "edit_message",
+        response_dict={"chat_id": "12345", "message_id": "12345", "text": "test"},
+    )
+    spy_requests_post.assert_called_once_with(
+        "https://api.telegram.org/bot12345/editMessageText",
+        json={"chat_id": "12345", "message_id": "12345", "text": "test"},
+    )
+
+
+def test_edit_message_with_reply_markup(mocker, monkeypatch):
+    monkeypatch.setenv("TOKEN", "12345")
+    spy_logging = mocker.spy(src.helper, "logging")
+    spy_requests_post = mocker.spy(requests, "post")
+    edit_message(
+        chat_id="12345",
+        message_id="12345",
+        text="test",
+        reply_markup={"keyboard": "test"},
+    )
+    assert spy_logging.call_count == 2
+    assert spy_requests_post.call_count == 1
+    spy_logging.assert_any_call(
+        "edit_message",
+        response_dict={
+            "chat_id": "12345",
+            "message_id": "12345",
+            "text": "test",
+            "reply_markup": {"keyboard": "test"},
+        },
+    )
+    spy_requests_post.assert_called_once_with(
+        "https://api.telegram.org/bot12345/editMessageText",
+        json={
+            "chat_id": "12345",
+            "message_id": "12345",
+            "text": "test",
+            "reply_markup": {"keyboard": "test"},
+        },
+    )

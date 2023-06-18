@@ -80,3 +80,14 @@ def test_lambda_handler_no_TELEGRAM_ADMIN_env(monkeypatch, apigw_event):
     assert ret["statusCode"] == 500
     assert "error" in ret["body"]
     assert data["error"]["message"] == "An exception occurred"
+
+
+def test_lambda_handler_no_TELEGRAM_GROUP_ID_env(monkeypatch, apigw_event):
+    monkeypatch.setenv("TOKEN", "12345")
+    monkeypatch.setenv("TELEGRAM_ADMIN", "12345, 54321")
+    ret = app.lambda_handler(apigw_event, "")
+    data = json.loads(ret["body"])
+
+    assert ret["statusCode"] == 500
+    assert "error" in ret["body"]
+    assert data["error"]["message"] == "An exception occurred"
