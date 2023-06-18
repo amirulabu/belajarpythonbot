@@ -4,7 +4,7 @@ from datetime import datetime
 from helper import get_new_group_link
 
 
-dynamodb = boto3.resource("dynamodb")
+dynamodb = boto3.resource("dynamodb", region_name="ap-southeast-1")
 
 table = dynamodb.Table("belajarpythonbot2023")  # type: ignore
 
