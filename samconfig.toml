@@ -17,10 +17,11 @@ lint = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
-s3_prefix = "belajarpythonbot"
+s3_prefix = "bpbot-2023"
 region = "ap-southeast-1"
 profile = "amirulabu"
 image_repositories = []
+stack_name = "bpbot-2023"
 
 [default.package.parameters]
 resolve_s3 = true

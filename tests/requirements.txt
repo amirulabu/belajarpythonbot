@@ -1,4 +1,5 @@
 pytest
 pytest-mock
+pytest-cov
 boto3
 requests

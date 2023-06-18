@@ -1,8 +1,15 @@
 import json
-import os
+from unittest.mock import patch
 import pytest
 
 from src import app
+from src.quiz import Quiz
+
+
+def mock_setenv(monkeypatch):
+    monkeypatch.setenv("TOKEN", "12345")
+    monkeypatch.setenv("TELEGRAM_ADMIN", "12345")
+    monkeypatch.setenv("TELEGRAM_GROUP_ID", "-12345")
 
 
 @pytest.fixture()
@@ -63,7 +70,23 @@ def apigw_event():
 
 
 def test_lambda_handler_token_valid(monkeypatch, apigw_event):
-    monkeypatch.setenv("TOKEN", "12345")
+    mock_setenv(monkeypatch)
+
+    class MockQuiz:
+        def __init__(self, body):
+            self.body = body
+            pass
+
+        def run(self):
+            pass
+
+    monkeypatch.setattr("src.app.Quiz", MockQuiz)
+    monkeypatch.setattr("src.app.Quiz.run", lambda x: None)
+
+    # mock_quiz = mocker.patch("src.quiz.Quiz", autospec=MockQuiz)
+    # mock_instance = mock_quiz.return_value
+    # mock_instance.run = lambda x: None
+
     ret = app.lambda_handler(apigw_event, "")
     data = json.loads(ret["body"])
 
@@ -130,13 +153,13 @@ def apigw_event_no_token():
 
 
 def test_lambda_handler_token_missing(monkeypatch, apigw_event_no_token):
-    monkeypatch.setenv("TOKEN", "12345")
+    mock_setenv(monkeypatch)
     ret = app.lambda_handler(apigw_event_no_token, "")
     data = json.loads(ret["body"])
 
-    assert ret["statusCode"] == 500
-    assert "message" in ret["body"]
-    assert data["message"] == "An exception occurred"
+    assert ret["statusCode"] == 401
+    assert "error" in ret["body"]
+    assert data["error"]["message"] == "UnauthorizedException: No token provided"
 
 
 @pytest.fixture()
@@ -197,10 +220,10 @@ def apigw_event_token_invalid():
 
 
 def test_lambda_handler_token_invalid(monkeypatch, apigw_event_token_invalid):
-    monkeypatch.setenv("TOKEN", "12345")
+    mock_setenv(monkeypatch)
     ret = app.lambda_handler(apigw_event_token_invalid, "")
     data = json.loads(ret["body"])
 
-    assert ret["statusCode"] == 500
-    assert "message" in ret["body"]
-    assert data["message"] == "An exception occurred"
+    assert ret["statusCode"] == 401
+    assert "error" in ret["body"]
+    assert data["error"]["message"] == "UnauthorizedException: Invalid token provided"

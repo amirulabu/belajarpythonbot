@@ -1,41 +1,68 @@
 import json
 import os
+import traceback
+
+from errors import EnvironmentException, UnauthorizedException
+from quiz import Quiz
 
 
 def lambda_handler(event, context):
     try:
+        if "TOKEN" not in os.environ:
+            raise EnvironmentException("TOKEN environment variable is not set")
+
+        if "TELEGRAM_ADMIN" not in os.environ:
+            raise EnvironmentException("TELEGRAM_ADMIN environment variable is not set")
+
+        if "TELEGRAM_GROUP_ID" not in os.environ:
+            raise EnvironmentException(
+                "TELEGRAM_GROUP_ID environment variable is not set"
+            )
+
         body = event["body"]
         queryStringParameters = event["queryStringParameters"]
 
-        if queryStringParameters is None:
-            raise Exception("No queryStringParameters")
-
-        if queryStringParameters["token"] is None:
-            raise Exception("No token provided")
+        if "token" not in queryStringParameters:
+            raise UnauthorizedException("No token provided")
 
         if queryStringParameters["token"] != os.environ["TOKEN"]:
-            raise Exception("Invalid token provided")
+            raise UnauthorizedException("Invalid token provided")
 
-        print(body)
-        print(queryStringParameters)
+        quiz = Quiz(json.loads(body))
+        quiz.run()
 
         return {
             "statusCode": 200,
             "body": json.dumps(
                 {
                     "message": "success!",
-                }
+                },
             ),
         }
 
-    except:
-        print("An exception occurred")
+    except UnauthorizedException as e:
+        return {
+            "statusCode": 401,
+            "body": json.dumps(
+                {
+                    "error": {
+                        "message": str(e),
+                    },
+                },
+            ),
+        }
+
+    except Exception as e:
+        print(e)
         print(context)
+        print(traceback.format_exc())
         return {
             "statusCode": 500,
             "body": json.dumps(
                 {
-                    "message": "An exception occurred",
-                }
+                    "error": {
+                        "message": "An exception occurred",
+                    },
+                },
             ),
         }
