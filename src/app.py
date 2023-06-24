@@ -4,6 +4,7 @@ import traceback
 
 from errors import EnvironmentException, UnauthorizedException
 from quiz import Quiz
+from helper import logging
 
 
 def lambda_handler(event, context):
@@ -28,7 +29,9 @@ def lambda_handler(event, context):
         if queryStringParameters["token"] != os.environ["TOKEN"]:
             raise UnauthorizedException("Invalid token provided")
 
-        quiz = Quiz(json.loads(body))
+        body_map = json.loads(body)
+        logging("app.body_map", body_map=body_map)
+        quiz = Quiz(body_map)
         quiz.run()
 
         return {
