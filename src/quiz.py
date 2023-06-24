@@ -137,4 +137,4 @@ class Quiz:
         )
 
     def notify_admin_start_quiz(self):
-        notify_admin(f"{self.full_name() - self.username} started the quiz")
+        notify_admin(f"{self.full_name()} - {self.username} started the quiz")
