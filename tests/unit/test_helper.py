@@ -2,6 +2,7 @@ import requests
 from src.helper import (
     edit_message,
     get_admin_chat_id,
+    get_new_group_link,
     get_url,
     logging,
     notify_admin,
@@ -132,3 +133,23 @@ def test_edit_message_with_reply_markup(mocker, monkeypatch):
             "reply_markup": {"keyboard": "test"},
         },
     )
+
+
+class MockResponse:
+    # mock json() method always returns a specific testing dictionary
+    @staticmethod
+    def json():
+        return {"result": "http://mock_group_link"}
+
+
+def test_get_new_group_link(monkeypatch):
+    monkeypatch.setenv("TOKEN", "12345")
+    monkeypatch.setenv("TELEGRAM_GROUP_ID", "-12345")
+
+    def mock_post(*args, **kwargs):
+        return MockResponse()
+
+    monkeypatch.setattr(requests, "post", mock_post)
+
+    group_link = get_new_group_link()
+    assert group_link == "http://mock_group_link"
