@@ -25,7 +25,7 @@ setup-test: setup-env tests/requirements.txt
 	$(PYTHON) -m pip install -r tests/requirements.txt
 
 test: setup-test
-	$(PYTHON) -m PYTHONPATH=src python -m pytest tests/unit -v
+	PYTHONPATH=src $(PYTHON) -m pytest tests/unit -v
 
 cleanup:
 	sam delete --stack-name "belajarpythonbot"
