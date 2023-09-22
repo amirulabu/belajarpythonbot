@@ -59,13 +59,19 @@ def get_admin_chat_id():
 
 def fix_reply_markup_readable(reply_markup):
     result = []
-
+    last_text_is_long = False
     for row in reply_markup:
-        if len(row["text"]) > 8:
+        if len(row["text"]) >= 8:
             result.append([row])
+            last_text_is_long = True
         else:
-            if len(result) >= 1 and isinstance(result[-1], list):
+            if (
+                len(result) >= 1
+                and isinstance(result[-1], list)
+                and last_text_is_long == False
+            ):
                 result[-1].append(row)
             else:
                 result.append([row])
+            last_text_is_long = False
     return result

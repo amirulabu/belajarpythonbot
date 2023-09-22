@@ -174,6 +174,29 @@ def test_fix_reply_markup_readable_short_and_long_text():
     ]
 
 
+def test_fix_reply_markup_readable_short_and_long_text_p2():
+    result = fix_reply_markup_readable(
+        [
+            {"text": "Guido van Rossum", "callback_data": "test1"},
+            {"text": "test2", "callback_data": "test2"},
+            {"text": "text3", "callback_data": "test3"},
+            {"text": "a long text4", "callback_data": "test4"},
+        ]
+    )
+    assert result == [
+        [
+            {"text": "Guido van Rossum", "callback_data": "test1"},
+        ],
+        [
+            {"text": "test2", "callback_data": "test2"},
+            {"text": "text3", "callback_data": "test3"},
+        ],
+        [
+            {"text": "a long text4", "callback_data": "test4"},
+        ],
+    ]
+
+
 def test_fix_reply_markup_readable_long_text():
     result = fix_reply_markup_readable(
         [
