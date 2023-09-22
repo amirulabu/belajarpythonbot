@@ -46,6 +46,10 @@ class Quiz:
         self.questions = quiz_dict
 
     def run(self):
+        if self.chat_id <= 0:
+            # Ignore group chat
+            return
+
         """Logic on what to reply"""
         UserDDB.add_or_get_user(self.user_id, self.first_name, self.username)
         if self.text == "/start":
@@ -60,8 +64,6 @@ class Quiz:
             self.send_question()
             if self.question_index == len(self.questions):
                 self.send_results()
-        elif self.chat_id == os.environ["TELEGRAM_GROUP_ID"]:
-            print("Ignore message from group")
         else:
             self.echo_message()
 
