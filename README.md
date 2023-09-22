@@ -15,3 +15,9 @@ The application uses several AWS resources, including Lambda functions and an AP
 
 - `make test` install testing packages and run test
 - `make deploy` build and deploy
+
+## Tips
+
+### Run only one test
+
+- `PYTHONPATH=src python -m pytest tests/unit/test_helper.py -sv -k "fix_reply"` this command will run the test inside file `test_helper.py` with the text `fix_reply`
