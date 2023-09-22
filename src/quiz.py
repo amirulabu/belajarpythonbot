@@ -1,3 +1,4 @@
+import os
 from db_operation import UserDDB
 from helper import fix_reply_markup_readable, send_message
 from quiz_dict import quiz_dict
@@ -59,6 +60,8 @@ class Quiz:
             self.send_question()
             if self.question_index == len(self.questions):
                 self.send_results()
+        elif self.chat_id == os.environ["TELEGRAM_GROUP_ID"]:
+            print("Ignore message from group")
         else:
             self.echo_message()
 
