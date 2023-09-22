@@ -140,10 +140,14 @@ def test_fix_reply_markup_readable_short_text():
     result = fix_reply_markup_readable(
         [
             {"text": "test", "callback_data": "test1"},
+            {"text": "test2", "callback_data": "test2"},
         ]
     )
     assert result == [
-        {"text": "test", "callback_data": "test1"},
+        [
+            {"text": "test", "callback_data": "test1"},
+            {"text": "test2", "callback_data": "test2"},
+        ]
     ]
 
 
@@ -157,8 +161,10 @@ def test_fix_reply_markup_readable_short_and_long_text():
         ]
     )
     assert result == [
-        {"text": "test1", "callback_data": "test1"},
-        {"text": "test2", "callback_data": "test2"},
+        [
+            {"text": "test1", "callback_data": "test1"},
+            {"text": "test2", "callback_data": "test2"},
+        ],
         [
             {"text": "a long text3", "callback_data": "test3"},
         ],
