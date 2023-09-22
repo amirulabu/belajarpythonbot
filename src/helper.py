@@ -55,3 +55,13 @@ def notify_admin(text):
 
 def get_admin_chat_id():
     return [x.strip() for x in os.environ["TELEGRAM_ADMIN"].split(",")]
+
+
+def fix_reply_markup_readable(reply_markup):
+    result = []
+    for r in reply_markup:
+        if len(r["text"]) > 8:
+            result.append([r])
+        else:
+            result.append(r)
+    return result

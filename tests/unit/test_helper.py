@@ -1,6 +1,7 @@
 import requests
 from src.helper import (
     edit_message,
+    fix_reply_markup_readable,
     get_admin_chat_id,
     get_new_group_link,
     get_url,
@@ -133,6 +134,63 @@ def test_edit_message_with_reply_markup(mocker, monkeypatch):
             "reply_markup": {"keyboard": "test"},
         },
     )
+
+
+def test_fix_reply_markup_readable_short_text():
+    result = fix_reply_markup_readable(
+        [
+            {"text": "test", "callback_data": "test1"},
+        ]
+    )
+    assert result == [
+        {"text": "test", "callback_data": "test1"},
+    ]
+
+
+def test_fix_reply_markup_readable_short_and_long_text():
+    result = fix_reply_markup_readable(
+        [
+            {"text": "test1", "callback_data": "test1"},
+            {"text": "test2", "callback_data": "test2"},
+            {"text": "a long text3", "callback_data": "test3"},
+            {"text": "a long text4", "callback_data": "test4"},
+        ]
+    )
+    assert result == [
+        {"text": "test1", "callback_data": "test1"},
+        {"text": "test2", "callback_data": "test2"},
+        [
+            {"text": "a long text3", "callback_data": "test3"},
+        ],
+        [
+            {"text": "a long text4", "callback_data": "test4"},
+        ],
+    ]
+
+
+def test_fix_reply_markup_readable_long_text():
+    result = fix_reply_markup_readable(
+        [
+            {"text": "a long text1", "callback_data": "test1"},
+            {"text": "a long text2", "callback_data": "test2"},
+            {"text": "a long text3", "callback_data": "test3"},
+            {"text": "a long text4", "callback_data": "test4"},
+        ]
+    )
+    assert result == [
+        [
+            {"text": "a long text1", "callback_data": "test1"},
+        ],
+        [
+            {"text": "a long text2", "callback_data": "test2"},
+        ],
+        [
+            {"text": "a long text3", "callback_data": "test3"},
+        ],
+        [
+            {"text": "a long text4", "callback_data": "test4"},
+        ],
+    ]
 
 
 class MockResponse:

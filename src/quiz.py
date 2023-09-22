@@ -1,5 +1,5 @@
 from db_operation import UserDDB
-from helper import send_message
+from helper import fix_reply_markup_readable, send_message
 from quiz_dict import quiz_dict
 from helper import edit_message, notify_admin
 
@@ -120,7 +120,7 @@ class Quiz:
                     "callback_data": f"{self.question_index}#{choice}",
                 }
             )
-        return {"inline_keyboard": [reply_markup]}
+        return {"inline_keyboard": [fix_reply_markup_readable(reply_markup)]}
 
     def send_question(self):
         if self.question_index >= len(self.questions):
