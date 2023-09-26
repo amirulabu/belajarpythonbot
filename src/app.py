@@ -31,6 +31,18 @@ def lambda_handler(event, context):
 
         body_map = json.loads(body)
         logging("app.body_map", body_map=body_map)
+
+        # ignore non-quiz telegram updates
+        if body_map.get("message") is None and body_map.get("callback_query") is None:
+            return {
+                "statusCode": 200,
+                "body": json.dumps(
+                    {
+                        "message": "success!",
+                    },
+                ),
+            }
+
         quiz = Quiz(body_map)
         quiz.run()
 
