@@ -23,11 +23,11 @@ quiz_dict = [
         "question": "Nyatakan versi Python yang terkini",
         "choices": [
             "2.7",
-            "3.8",
-            "3.9",
             "3.11",
+            "3.9",
+            "3.12",
         ],
-        "answer": "3.11",
+        "answer": "3.12",
     },
     {
         "question": "Yang manakah antara berikut BUKAN libraries dalam python",
