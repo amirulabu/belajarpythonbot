@@ -1,4 +1,5 @@
 {
   "python.analysis.typeCheckingMode": "basic",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "git.enableCommitSigning": false
 }
