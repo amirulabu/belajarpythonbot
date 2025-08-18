@@ -1,6 +1,7 @@
 import json
 import os
 import traceback
+import boto3
 
 from errors import EnvironmentException, UnauthorizedException
 from quiz import Quiz
@@ -29,22 +30,12 @@ def lambda_handler(event, context):
         if queryStringParameters["token"] != os.environ["TOKEN"]:
             raise UnauthorizedException("Invalid token provided")
 
-        body_map = json.loads(body)
-        logging("app.body_map", body_map=body_map)
-
-        # ignore non-quiz telegram updates
-        if body_map.get("message") is None and body_map.get("callback_query") is None:
-            return {
-                "statusCode": 200,
-                "body": json.dumps(
-                    {
-                        "message": "success!",
-                    },
-                ),
-            }
-
-        quiz = Quiz(body_map)
-        quiz.run()
+        sqs = boto3.client("sqs")
+        queue_url = os.environ["QUIZ_QUEUE_URL"]
+        sqs.send_message(
+            QueueUrl=queue_url,
+            MessageBody=body
+        )
 
         return {
             "statusCode": 200,

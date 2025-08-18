@@ -19,16 +19,40 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.9
       Architectures:
-        - x86_64
-      Policies: 
-        - DynamoDBCrudPolicy:
-            TableName: belajarpythonbot2023
+        - arm64
+      Policies:
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt QuizQueue.QueueName
       Events:
         BPBot:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /belajarpythonbot
             Method: post
+      Environment:
+        Variables:
+          QUIZ_QUEUE_URL: !Ref QuizQueue
+
+  QuizWorkerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: quiz_worker.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - arm64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: belajarpythonbot2023
+      Events:
+        QuizQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt QuizQueue.Arn
+            BatchSize: 1
+
+  QuizQueue:
+    Type: AWS::SQS::Queue
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
@@ -43,3 +67,9 @@ Outputs:
   BPBotFunctionIamRole:
     Description: "Implicit IAM Role created for BPBot function"
     Value: !GetAtt BPBotFunctionRole.Arn
+  QuizWorkerFunction:
+    Description: "Quiz Worker Lambda Function ARN"
+    Value: !GetAtt QuizWorkerFunction.Arn
+  QuizWorkerFunctionIamRole:
+    Description: "Implicit IAM Role created for Quiz Worker function"
+    Value: !GetAtt QuizWorkerFunctionRole.Arn
