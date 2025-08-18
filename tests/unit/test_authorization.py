@@ -3,13 +3,13 @@ from unittest.mock import patch
 import pytest
 
 from src import app
-from src.quiz import Quiz
 
 
 def mock_setenv(monkeypatch):
     monkeypatch.setenv("TOKEN", "12345")
     monkeypatch.setenv("TELEGRAM_ADMIN", "12345")
     monkeypatch.setenv("TELEGRAM_GROUP_ID", "-12345")
+    monkeypatch.setenv("QUIZ_QUEUE_URL", "some_url")
 
 
 @pytest.fixture()
@@ -69,8 +69,12 @@ def apigw_event():
     }
 
 
-def test_lambda_handler_token_valid(monkeypatch, apigw_event):
+@patch("boto3.client")
+def test_lambda_handler_token_valid(mock_boto_client, monkeypatch, apigw_event):
     mock_setenv(monkeypatch)
+
+    mock_sqs_client = mock_boto_client.return_value
+    mock_sqs_client.send_message.return_value = {}
 
     class MockQuiz:
         def __init__(self, body):
