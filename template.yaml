@@ -39,6 +39,7 @@ Resources:
       CodeUri: src/
       Handler: handlers.quiz_worker.lambda_handler
       Runtime: python3.14
+      Timeout: 30
       Architectures:
         - x86_64
       Policies:
