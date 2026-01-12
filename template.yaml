@@ -5,6 +5,17 @@ Description: >
 
   Sample SAM Template for belajarpythonbot
 
+Parameters:
+  TelegramAdmin:
+    Type: String
+    Description: Telegram admin user ID
+  Token:
+    Type: String
+    Description: Telegram bot token
+  TelegramGroupId:
+    Type: String
+    Description: Telegram group ID
+
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -51,6 +62,11 @@ Resources:
           Properties:
             Queue: !GetAtt QuizQueue.Arn
             BatchSize: 1
+      Environment:
+        Variables:
+          TELEGRAM_ADMIN: !Ref TelegramAdmin
+          TOKEN: !Ref Token
+          TELEGRAM_GROUP_ID: !Ref TelegramGroupId
 
   QuizQueue:
     Type: AWS::SQS::Queue

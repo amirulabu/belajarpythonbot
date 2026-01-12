@@ -29,7 +29,7 @@ cleanup:
 	sam delete --stack-name "belajarpythonbot"
 
 deploy: build
-	sam deploy
+	sam deploy --parameter-overrides TelegramAdmin=$(TELEGRAM_ADMIN) Token=$(TOKEN) TelegramGroupId=$(TELEGRAM_GROUP_ID)
 
 test-coverage:
 	@command -v poetry >/dev/null 2>&1 || pip install poetry
