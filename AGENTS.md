@@ -9,22 +9,26 @@ This is a serverless Telegram bot built with Python using AWS SAM. The project c
 - **tests/**: Unit and integration tests using pytest
 - **template.yaml**: AWS SAM template defining serverless resources
 - **Makefile**: Build, test, and deployment automation
+- **pyproject.toml**: Poetry configuration for dependency management
 
 ## Development Commands
 
 ### Testing
 ```bash
-# Run all unit tests
+# Run all unit tests (via Poetry)
 make test
 
 # Run tests with coverage report
 make test-coverage
 
 # Run a specific test file
-PYTHONPATH=src python -m pytest tests/unit/test_helper.py -sv
+poetry run pytest tests/unit/test_helper.py -sv
 
 # Run a specific test function
-PYTHONPATH=src python -m pytest tests/unit/test_helper.py::test_fix_reply_markup -sv -k "fix_reply"
+poetry run pytest tests/unit/test_helper.py::test_fix_reply_markup -sv
+
+# Run tests matching a keyword pattern
+poetry run pytest tests/unit -k "fix_reply"
 ```
 
 ### Build & Deployment
@@ -39,11 +43,12 @@ make deploy
 make run-local
 
 # Setup environments
-make setup-test    # Install test dependencies
-make setup-run     # Install runtime dependencies
+make setup         # Install production dependencies via Poetry
+make setup-dev     # Install production + dev dependencies via Poetry
 
 # Clean up
-make clean
+make clean         # Remove .venv and .pyc files
+make cleanup       # Delete AWS CloudFormation stack
 ```
 
 ## Code Style Guidelines
@@ -100,12 +105,13 @@ from helper import send_message
 - Unit tests in `tests/unit/test_*.py`
 - Integration tests in `tests/integration/`
 - Test fixtures in `tests/unit/fixtures/`
+- Python path automatically configured via pyproject.toml
 
 ### Testing Patterns
 - Use pytest fixtures extensively
 - Mock external dependencies with `pytest-mock`
 - Use `monkeypatch` for environment variable testing
-- Always set `PYTHONPATH=src` when running tests
+- Run tests via Poetry to ensure correct Python path
 
 ### Example Test Structure
 ```python
@@ -123,23 +129,27 @@ def test_send_message():
 
 ## Dependencies
 
-### Production (src/requirements.txt)
+### Production (pyproject.toml [tool.poetry.dependencies])
 - boto3==1.26.153
 - requests==2.31.0
+- Python ^3.9
 
-### Testing (tests/requirements.txt)
+### Development (pyproject.toml [tool.poetry.group.dev.dependencies])
 - pytest==7.3.2
 - pytest-cov==4.1.0
 - pytest-mock==3.11.1
 
+Note: Use Poetry for all dependency management. The project includes src/requirements.txt for AWS Lambda deployment but Poetry is the source of truth.
+
 ## Environment Setup
-- Python 3.9.17 (specified in .python-version)
+- Python 3.9+ (specified in pyproject.toml)
 - Uses AWS SAM for local development and deployment
 - DynamoDB for persistence, SQS for queuing, API Gateway for HTTP endpoints
+- Poetry for dependency management
 
 ## Important Notes
 - No linting tools configured - consider adding flake8/black for consistency
 - Basic type checking only - add mypy for stronger type validation
 - No pre-commit hooks - can be added for better code quality
-- VS Code configured with format-on-save enabled
-- Always use `make` commands rather than direct sam commands when possible
+- Always use `make` commands rather than direct sam/poetry commands when possible
+- Poetry automatically sets PYTHONPATH to include src/ via pyproject.toml
