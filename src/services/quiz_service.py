@@ -3,14 +3,14 @@ import boto3
 from datetime import datetime
 from typing import Dict, Any, List, Optional
 from boto3.dynamodb.conditions import Key
-from ..utils import (
+from utils import (
     parse_telegram_update,
     parse_callback_data,
     get_full_name,
     is_correct_answer,
     build_reply_markup,
 )
-from ..telegram_service import TelegramService
+from telegram_service import TelegramService
 
 
 class QuizService:
@@ -130,7 +130,7 @@ class QuizService:
 
     def _load_quiz_data(self) -> List[Dict[str, Any]]:
         """Load quiz data from quiz_dict module."""
-        from .quiz_dict import quiz_dict
+        from services.quiz_dict import quiz_dict
 
         return quiz_dict
 

@@ -2,7 +2,7 @@ import json
 import os
 import pytest
 
-from src import app
+from src.handlers.api_handler import lambda_handler as app_lambda_handler
 from src.errors import EnvironmentException
 
 

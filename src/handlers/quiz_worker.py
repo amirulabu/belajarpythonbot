@@ -1,5 +1,5 @@
 import json
-from ..services.quiz_service import QuizService
+from services.quiz_service import QuizService
 
 
 def lambda_handler(event, context):

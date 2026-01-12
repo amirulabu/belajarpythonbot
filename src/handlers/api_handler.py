@@ -1,8 +1,8 @@
 import os
 import json
 import boto3
-from ..services.quiz_service import QuizService
-from ..errors import EnvironmentException, UnauthorizedException
+from services.quiz_service import QuizService
+from errors import EnvironmentException, UnauthorizedException
 
 
 def lambda_handler(event, context):

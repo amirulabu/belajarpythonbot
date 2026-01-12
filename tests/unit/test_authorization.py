@@ -2,7 +2,7 @@ import json
 from unittest.mock import patch
 import pytest
 
-from src import app
+from src.handlers.api_handler import lambda_handler as app_lambda_handler
 
 
 def mock_setenv(monkeypatch):
@@ -76,7 +76,7 @@ def test_lambda_handler_token_valid(mock_boto_client, monkeypatch, apigw_event):
     mock_sqs_client = mock_boto_client.return_value
     mock_sqs_client.send_message.return_value = {}
 
-    ret = app.lambda_handler(apigw_event, "")
+    ret = app_lambda_handler(apigw_event, "")
     data = json.loads(ret["body"])
 
     assert ret["statusCode"] == 200
@@ -143,7 +143,7 @@ def apigw_event_no_token():
 
 def test_lambda_handler_token_missing(monkeypatch, apigw_event_no_token):
     mock_setenv(monkeypatch)
-    ret = app.lambda_handler(apigw_event_no_token, "")
+    ret = app_lambda_handler(apigw_event_no_token, "")
     data = json.loads(ret["body"])
 
     assert ret["statusCode"] == 401
@@ -210,7 +210,7 @@ def apigw_event_token_invalid():
 
 def test_lambda_handler_token_invalid(monkeypatch, apigw_event_token_invalid):
     mock_setenv(monkeypatch)
-    ret = app.lambda_handler(apigw_event_token_invalid, "")
+    ret = app_lambda_handler(apigw_event_token_invalid, "")
     data = json.loads(ret["body"])
 
     assert ret["statusCode"] == 401
