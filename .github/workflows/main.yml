@@ -38,4 +38,4 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-southeast-1
       - run: make build
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides TelegramAdmin=${{ secrets.TELEGRAM_ADMIN }} Token=${{ secrets.TOKEN }} TelegramGroupId=${{ secrets.TELEGRAM_GROUP_ID }}
