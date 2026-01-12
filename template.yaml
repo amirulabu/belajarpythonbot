@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   belajarpythonbot
@@ -19,7 +19,7 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.14
       Architectures:
-        - arm64
+        - x86_64
       Policies:
         - SQSSendMessagePolicy:
             QueueName: !GetAtt QuizQueue.QueueName
@@ -40,7 +40,7 @@ Resources:
       Handler: quiz_worker.lambda_handler
       Runtime: python3.14
       Architectures:
-        - arm64
+        - x86_64
       Policies:
         - DynamoDBCrudPolicy:
             TableName: belajarpythonbot2023
