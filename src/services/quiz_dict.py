@@ -24,10 +24,10 @@ quiz_dict = [
         "choices": [
             "2.7",
             "3.12",
-            "3.9",
-            "3.13",
+            "3.14",
+            "3.20",
         ],
-        "answer": "3.13",
+        "answer": "3.14",
     },
     {
         "question": "Yang manakah antara berikut BUKAN libraries dalam python",
