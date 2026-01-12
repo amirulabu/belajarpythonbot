@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "belajarpythonbot"
+version = "0.1.0"
+description = "Serverless Telegram bot built with Python using AWS SAM"
+authors = ["Your Name <your.email@example.com>"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.9"
+boto3 = "1.26.153"
+requests = "2.31.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "7.3.2"
+pytest-cov = "4.1.0"
+pytest-mock = "3.11.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]

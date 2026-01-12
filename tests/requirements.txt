@@ -1,5 +1,0 @@
-pytest==7.3.2
-pytest-cov==4.1.0
-pytest-mock==3.11.1
-boto3==1.26.158
-requests==2.31.0

@@ -1,31 +1,22 @@
 .PHONY: venv install
 
-VENV=env
-PYTHON=$(VENV)/bin/python
-
 run-local:
 	sam local start-api
 
 build:
 	sam build --use-container
 
-setup-env:
-ifeq (,$(wildcard $(VENV)))
-	python -m pip install --user virtualenv
-	python -m virtualenv env
-endif
+setup:
+	poetry install
 
-setup-run: setup-env src/requirements.txt
-	$(PYTHON) -m pip install -r src/requirements.txt
+setup-dev:
+	poetry install --with dev
 
-run-shell: setup-run
-	$(PYTHON) 
+run-shell:
+	poetry run python
 
-setup-test: setup-env tests/requirements.txt
-	$(PYTHON) -m pip install -r tests/requirements.txt
-
-test: setup-test
-	PYTHONPATH=src $(PYTHON) -m pytest tests/unit -v
+test: setup-dev
+	poetry run pytest tests/unit -v
 
 cleanup:
 	sam delete --stack-name "belajarpythonbot"
@@ -33,9 +24,9 @@ cleanup:
 deploy: build
 	sam deploy
 
-test-coverage: setup-test
-	PYTHONPATH=src $(PYTHON) -m pytest --cov-report term-missing --cov=src tests/unit
+test-coverage: setup-dev
+	poetry run pytest --cov-report term-missing --cov=src tests/unit
 
 clean:
-	rm -rf $(VENV)
+	rm -rf .venv
 	find . -type f -name '*.pyc' -delete
