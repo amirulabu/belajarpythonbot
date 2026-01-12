@@ -4,7 +4,7 @@ class UnauthorizedException(Exception):
         self.message = message
 
     def __str__(self):
-        return self.name + ": " + self.message
+        return f"{self.name}: {self.message}"
 
 
 class EnvironmentException(Exception):
@@ -13,4 +13,4 @@ class EnvironmentException(Exception):
         self.message = message
 
     def __str__(self):
-        return self.name + ": " + self.message
+        return f"{self.name}: {self.message}"
