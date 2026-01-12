@@ -16,7 +16,7 @@ Resources:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: src/
-      Handler: app.lambda_handler
+      Handler: handlers.api_handler.lambda_handler
       Runtime: python3.14
       Architectures:
         - x86_64
@@ -37,7 +37,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: src/
-      Handler: quiz_worker.lambda_handler
+      Handler: handlers.quiz_worker.lambda_handler
       Runtime: python3.14
       Architectures:
         - x86_64
