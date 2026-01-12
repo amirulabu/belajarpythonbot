@@ -76,21 +76,6 @@ def test_lambda_handler_token_valid(mock_boto_client, monkeypatch, apigw_event):
     mock_sqs_client = mock_boto_client.return_value
     mock_sqs_client.send_message.return_value = {}
 
-    class MockQuiz:
-        def __init__(self, body):
-            self.body = body
-            pass
-
-        def run(self):
-            pass
-
-    monkeypatch.setattr("src.app.Quiz", MockQuiz)
-    monkeypatch.setattr("src.app.Quiz.run", lambda x: None)
-
-    # mock_quiz = mocker.patch("src.quiz.Quiz", autospec=MockQuiz)
-    # mock_instance = mock_quiz.return_value
-    # mock_instance.run = lambda x: None
-
     ret = app.lambda_handler(apigw_event, "")
     data = json.loads(ret["body"])
 
