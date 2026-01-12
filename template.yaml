@@ -17,7 +17,7 @@ Resources:
     Properties:
       CodeUri: src/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.14
       Architectures:
         - arm64
       Policies:
@@ -38,7 +38,7 @@ Resources:
     Properties:
       CodeUri: src/
       Handler: quiz_worker.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.14
       Architectures:
         - arm64
       Policies:
