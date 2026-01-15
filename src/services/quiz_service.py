@@ -9,6 +9,7 @@ from utils import (
     get_full_name,
     is_correct_answer,
     build_reply_markup,
+    is_allowed_chat,
 )
 from telegram_service import TelegramService
 
@@ -25,6 +26,13 @@ class QuizService:
         """Handle incoming Telegram update."""
         message, callback_query = parse_telegram_update(data)
 
+        if message and not is_allowed_chat(message.get("chat_id"), message.get("chat_type")):
+            return
+        if callback_query and not is_allowed_chat(
+            callback_query.get("chat_id"), callback_query.get("chat_type")
+        ):
+            return
+
         if message and message["text"] == "/start":
             self._handle_start_command(message)
         elif callback_query:
@@ -34,7 +42,9 @@ class QuizService:
 
     def _handle_start_command(self, message: Dict[str, Any]) -> None:
         """Handle /start command."""
-        if message["chat_id"] <= 0:  # Ignore group chats
+        if not isinstance(message.get("user_id"), int) or not isinstance(
+            message.get("chat_id"), int
+        ):
             return
 
         user = self._add_or_get_user(
@@ -59,6 +69,11 @@ class QuizService:
 
     def _handle_callback_query(self, callback_query: Dict[str, Any]) -> None:
         """Handle callback query from inline buttons."""
+        if not isinstance(callback_query.get("user_id"), int) or not isinstance(
+            callback_query.get("chat_id"), int
+        ):
+            return
+
         question_index, answer = parse_callback_data(callback_query["data"])
 
         if question_index < 0:
@@ -91,8 +106,12 @@ class QuizService:
 
     def _handle_text_message(self, message: Dict[str, Any]) -> None:
         """Handle regular text messages."""
+        if not isinstance(message.get("chat_id"), int):
+            return
+
+        # Keep the bot quiet unless the user starts the quiz.
         self.telegram_service.send_message(
-            chat_id=message["chat_id"], text=f"Echo, {message['text']}"
+            chat_id=message["chat_id"], text="Send /start to begin the quiz."
         )
 
     def _send_question(self, chat_id: int, question_index: int) -> None:

@@ -15,6 +15,10 @@ Parameters:
   TelegramGroupId:
     Type: String
     Description: Telegram group ID
+  TelegramAllowedChatIds:
+    Type: String
+    Default: ""
+    Description: Optional. Comma-separated list of allowed Telegram chat IDs (e.g. "-1001234567890"). If empty, bot responds everywhere except group/supergroup chats.
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -67,6 +71,7 @@ Resources:
           TELEGRAM_ADMIN: !Ref TelegramAdmin
           TOKEN: !Ref Token
           TELEGRAM_GROUP_ID: !Ref TelegramGroupId
+          TELEGRAM_ALLOWED_CHAT_IDS: !Ref TelegramAllowedChatIds
 
   QuizQueue:
     Type: AWS::SQS::Queue

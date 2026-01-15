@@ -16,6 +16,14 @@ The application uses several AWS resources, including Lambda functions and an AP
 - `make test` install testing packages and run test
 - `make deploy` build and deploy
 
+## Chat filtering (stop replying in groups)
+
+By default, the bot responds **everywhere except Telegram groups/supergroups**.
+
+If you want to allow the bot to respond only in a specific chat (for example, a specific channel or group), set:
+
+- `TELEGRAM_ALLOWED_CHAT_IDS`: comma-separated list of allowed chat IDs (supports negative IDs), e.g. `-1001234567890`
+
 ## Tips
 
 ### Run only one test
