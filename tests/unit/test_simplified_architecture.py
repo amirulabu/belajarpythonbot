@@ -79,6 +79,7 @@ def test_parse_telegram_update_message(telegram_update_start):
     assert message is not None
     assert message["text"] == "/start"
     assert message["chat_id"] == 12345
+    assert message["chat_type"] == "private"
     assert message["first_name"] == "John"
     assert message["last_name"] == "Doe"
     assert message["username"] == "JohnDoe"
@@ -193,7 +194,7 @@ def test_quiz_service_handle_text_message(quiz_service):
     text_update = {
         "message": {
             "from": {"id": 12345, "first_name": "John"},
-            "chat": {"id": 12345},
+            "chat": {"id": 12345, "type": "private"},
             "text": "Hello world"
         }
     }
@@ -201,4 +202,34 @@ def test_quiz_service_handle_text_message(quiz_service):
     with patch.object(quiz_service.telegram_service, 'send_message') as mock_send:
         quiz_service.handle_telegram_update(text_update)
         
-        mock_send.assert_called_once_with(chat_id=12345, text="Echo, Hello world")
+        mock_send.assert_called_once_with(chat_id=12345, text="Send /start to begin the quiz.")
+
+
+def test_quiz_service_ignores_group_messages_by_default(quiz_service):
+    group_update = {
+        "message": {
+            "from": {"id": 12345, "first_name": "John"},
+            "chat": {"id": -999, "type": "group"},
+            "text": "Hello group"
+        }
+    }
+
+    with patch.object(quiz_service.telegram_service, 'send_message') as mock_send:
+        quiz_service.handle_telegram_update(group_update)
+        mock_send.assert_not_called()
+
+
+def test_quiz_service_allows_channel_messages_by_default(quiz_service):
+    channel_update = {
+        "message": {
+            "from": {"id": 12345, "first_name": "John"},
+            "chat": {"id": -1001234567890, "type": "channel"},
+            "text": "Hello channel"
+        }
+    }
+
+    with patch.object(quiz_service.telegram_service, 'send_message') as mock_send:
+        quiz_service.handle_telegram_update(channel_update)
+        mock_send.assert_called_once_with(
+            chat_id=-1001234567890, text="Send /start to begin the quiz."
+        )
